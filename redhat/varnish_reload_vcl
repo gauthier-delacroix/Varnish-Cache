@@ -10,7 +10,7 @@
 # The following environment variables have to be set:
 # RELOAD_VCL, VARNISH_VCL_CONF, VARNISH_ADMIN_LISTEN_PORT
 # The following are optional:
-# VARNISH_SECRET_FILE, VARNISH_ADMIN_LISTEN_ADDRESS
+# VARNISH_SECRET_FILE, VARNISH_ADMIN_LISTEN_ADDRESS, VARNISH_VCL_DIR
 #
 # Requires GNU bash and GNU date
 #
@@ -26,6 +26,7 @@ print_debug() {
 	echo "
 Parsed configuration:
 RELOAD_VCL=\"$RELOAD_VCL\"
+VARNISH_VCL_DIR=\"$VARNISH_VCL_DIR\"
 VARNISH_VCL_CONF=\"$VARNISH_VCL_CONF\"
 VARNISH_ADMIN_LISTEN_ADDRESS=\"$VARNISH_ADMIN_LISTEN_ADDRESS\"
 VARNISH_ADMIN_LISTEN_PORT=\"$VARNISH_ADMIN_LISTEN_PORT\"
@@ -38,6 +39,8 @@ VARNISH_SECRET_FILE=\"$VARNISH_SECRET_FILE\"
 
 $debug && print_debug
 
+$VARNISH_VCL_PATH = "${VARNISH_VCL_DIR}/${VARNISH_VCL_CONF}"
+
 # Check configuration
 if [ ! "$RELOAD_VCL" = "1" ]; then
 	echo "Error: RELOAD_VCL is not set to 1"
@@ -47,8 +50,8 @@ elif [ -z "$VARNISH_VCL_CONF" ]; then
 	echo "Error: VARNISH_VCL_CONF is not set"
 	exit 2
 
-elif [ ! -s "$VARNISH_VCL_CONF" ]; then
-	echo "Eror: VCL config $VARNISH_VCL_CONF is unreadable or empty"
+elif [ ! -s "$VARNISH_VCL_PATH" ]; then
+	echo "Eror: VCL config $VARNISH_VCL_PATH is unreadable or empty"
 	exit 2
 
 elif [ -z "$VARNISH_ADMIN_LISTEN_ADDRESS" ]; then
@@ -91,11 +94,11 @@ fi
 
 current_config=$( $VARNISHADM vcl.list | awk ' /^active/ { print $3 } ' )
 
-echo "Loading vcl from $VARNISH_VCL_CONF"
+echo "Loading vcl from $VARNISH_VCL_PATH"
 echo "Current running config name is $current_config"
 echo "Using new config name $new_config"
 
-if $VARNISHADM vcl.load $new_config $VARNISH_VCL_CONF; then
+if $VARNISHADM vcl.load $new_config $VARNISH_VCL_PATH; then
 	$debug && echo "$VARNISHADM vcl.load succeded"
 else
 	echo "$VARNISHADM vcl.load failed"
