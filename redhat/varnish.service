@@ -27,7 +27,7 @@ EnvironmentFile=/etc/varnish/varnish.params
 Type=forking
 PIDFile=/var/run/varnish.pid
 PrivateTmp=true
-ExecStartPre=/usr/sbin/varnishd -C -f $VARNISH_VCL_CONF
+ExecStartPre=/usr/sbin/varnishd -C -f $VARNISH_VCL_CONF $COMPILE_OPTS
 ExecStart=/usr/sbin/varnishd \
 	-P /var/run/varnish.pid \
 	-f $VARNISH_VCL_CONF \
@@ -38,6 +38,7 @@ ExecStart=/usr/sbin/varnishd \
 	-g $VARNISH_GROUP \
 	-S $VARNISH_SECRET_FILE \
 	-s $VARNISH_STORAGE \
+	$COMPILE_OPTS \
 	$DAEMON_OPTS
 
 ExecReload=/usr/sbin/varnish_reload_vcl

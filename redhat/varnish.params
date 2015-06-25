@@ -31,5 +31,13 @@ VARNISH_TTL=120
 VARNISH_USER=varnish
 VARNISH_GROUP=varnish
 
+# Startup options required to compile the configuration.
+# The following run-time parameters must be defined here, if needed:
+# cc_command, group_cc, vcc_allow_inline_c, vcc_err_unref, vcc_unsafe_path,
+# vcl_dir, vmod_dir
+# Defining them in DAEMON_OPTS may result in a syntax check failure.
+# See the man page varnishd(1).
+#COMPILE_OPTS="-p vcl_dir=/etc/varnish -p vcc_err_unref=on"
+
 # Other options, see the man page varnishd(1)
 #DAEMON_OPTS="-p thread_pool_min=5 -p thread_pool_max=500 -p thread_pool_timeout=300"

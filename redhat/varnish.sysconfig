@@ -91,6 +91,14 @@ VARNISH_STORAGE="malloc,${VARNISH_STORAGE_SIZE}"
 # # Default TTL used when the backend does not specify one
 VARNISH_TTL=120
 #
+# Startup options required to compile the configuration.
+# The following run-time parameters must be defined here, if needed:
+# cc_command, group_cc, vcc_allow_inline_c, vcc_err_unref, vcc_unsafe_path,
+# vcl_dir, vmod_dir
+# Defining them in DAEMON_OPTS may result in a syntax check failure.
+# See the man page varnishd(1).
+#COMPILE_OPTS="-p vcl_dir=/etc/varnish -p vcc_err_unref=on"
+#
 # # DAEMON_OPTS is used by the init script.  If you add or remove options, make
 # # sure you update this section, too.
 DAEMON_OPTS="-a ${VARNISH_LISTEN_ADDRESS}:${VARNISH_LISTEN_PORT} \
@@ -102,7 +110,8 @@ DAEMON_OPTS="-a ${VARNISH_LISTEN_ADDRESS}:${VARNISH_LISTEN_PORT} \
              -p thread_pool_timeout=${VARNISH_THREAD_TIMEOUT} \
              -u varnish -g varnish \
              -S ${VARNISH_SECRET_FILE} \
-             -s ${VARNISH_STORAGE}"
+             -s ${VARNISH_STORAGE}" \
+             ${COMPILE_OPTS}
 #
 
 
